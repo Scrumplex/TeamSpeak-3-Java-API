@@ -1,10 +1,10 @@
-package com.github.theholywaffle.teamspeak3.commands;
+package com.github.theholywaffle.teamspeak3.api.wrapper;
 
 /*
  * #%L
  * TeamSpeak 3 Java API
  * %%
- * Copyright (C) 2014 Bert De Geyter
+ * Copyright (C) 2016 Bert De Geyter, Roger Baumgartner
  * %%
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,24 +26,25 @@ package com.github.theholywaffle.teamspeak3.commands;
  * #L%
  */
 
-import com.github.theholywaffle.teamspeak3.api.ReasonIdentifier;
-import com.github.theholywaffle.teamspeak3.commands.parameter.ArrayParameter;
-import com.github.theholywaffle.teamspeak3.commands.parameter.KeyValueParam;
+import java.util.Map;
 
-public class CClientKick extends Command {
+public class IconFile extends FileListEntry {
 
-	public CClientKick(ReasonIdentifier reason, String reasonMessage, int... clientIds) {
-		super("clientkick");
+	public IconFile(Map<String, String> map, int channelId, String path) {
+		super(map, channelId, path);
+	}
 
-		add(new KeyValueParam("reasonid", reason.getIndex()));
-		if (reasonMessage != null) {
-			add(new KeyValueParam("reasonmsg", reasonMessage));
-		}
-
-		final ArrayParameter p = new ArrayParameter(clientIds.length);
-		for (final int id : clientIds) {
-			p.add(new KeyValueParam("clid", id));
-		}
-		add(p);
+	/**
+	 * Gets the icon ID corresponding to this file, or {@code -1} if the file name
+	 * doesn't follow the standard format.
+	 *
+	 * @return this file's icon ID
+	 */
+	public long getIconId() {
+		String fileName = getName();
+		if (!fileName.matches("icon_\\d{1,10}")) return -1L; // Doesn't match standard pattern
+		long id = Long.parseLong(fileName.substring("icon_".length()));
+		if ((id & 0xFFFF_FFFF_0000_0000L) != 0) return -1L; // CRC32 is 32 bits, so needs to fit into an int
+		return id;
 	}
 }

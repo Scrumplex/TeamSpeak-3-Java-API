@@ -4,7 +4,7 @@ package com.github.theholywaffle.teamspeak3.commands;
  * #%L
  * TeamSpeak 3 Java API
  * %%
- * Copyright (C) 2014 Bert De Geyter
+ * Copyright (C) 2016 Bert De Geyter, Roger Baumgartner
  * %%
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,24 +26,19 @@ package com.github.theholywaffle.teamspeak3.commands;
  * #L%
  */
 
-import com.github.theholywaffle.teamspeak3.api.ReasonIdentifier;
-import com.github.theholywaffle.teamspeak3.commands.parameter.ArrayParameter;
 import com.github.theholywaffle.teamspeak3.commands.parameter.KeyValueParam;
 
-public class CClientKick extends Command {
+public class CFtInitUpload extends Command {
 
-	public CClientKick(ReasonIdentifier reason, String reasonMessage, int... clientIds) {
-		super("clientkick");
-
-		add(new KeyValueParam("reasonid", reason.getIndex()));
-		if (reasonMessage != null) {
-			add(new KeyValueParam("reasonmsg", reasonMessage));
-		}
-
-		final ArrayParameter p = new ArrayParameter(clientIds.length);
-		for (final int id : clientIds) {
-			p.add(new KeyValueParam("clid", id));
-		}
-		add(p);
+	public CFtInitUpload(int transferId, String path, int channelId, String channelPassword, long size, boolean overwrite) {
+		super("ftinitupload");
+		add(new KeyValueParam("clientftfid", transferId));
+		add(new KeyValueParam("name", path.startsWith("/") ? path : "/" + path));
+		add(new KeyValueParam("cid", channelId));
+		add(new KeyValueParam("cpw", channelPassword != null ? channelPassword : ""));
+		add(new KeyValueParam("size", size));
+		add(new KeyValueParam("overwrite", overwrite));
+		add(new KeyValueParam("resume", 0));
+		add(new KeyValueParam("proto", 0)); // Use current (old) protocol for as long as possible
 	}
 }

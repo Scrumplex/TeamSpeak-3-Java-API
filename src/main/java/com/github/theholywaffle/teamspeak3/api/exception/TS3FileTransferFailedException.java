@@ -1,4 +1,4 @@
-package com.github.theholywaffle.teamspeak3.commands;
+package com.github.theholywaffle.teamspeak3.api.exception;
 
 /*
  * #%L
@@ -26,24 +26,17 @@ package com.github.theholywaffle.teamspeak3.commands;
  * #L%
  */
 
-import com.github.theholywaffle.teamspeak3.api.ReasonIdentifier;
-import com.github.theholywaffle.teamspeak3.commands.parameter.ArrayParameter;
-import com.github.theholywaffle.teamspeak3.commands.parameter.KeyValueParam;
+import java.io.IOException;
 
-public class CClientKick extends Command {
+public class TS3FileTransferFailedException extends TS3Exception {
 
-	public CClientKick(ReasonIdentifier reason, String reasonMessage, int... clientIds) {
-		super("clientkick");
+	private static final long serialVersionUID = 2819130214534186875L;
 
-		add(new KeyValueParam("reasonid", reason.getIndex()));
-		if (reasonMessage != null) {
-			add(new KeyValueParam("reasonmsg", reasonMessage));
-		}
+	public TS3FileTransferFailedException(String msg) {
+		super(msg);
+	}
 
-		final ArrayParameter p = new ArrayParameter(clientIds.length);
-		for (final int id : clientIds) {
-			p.add(new KeyValueParam("clid", id));
-		}
-		add(p);
+	public TS3FileTransferFailedException(String msg, IOException cause) {
+		super(msg, cause);
 	}
 }

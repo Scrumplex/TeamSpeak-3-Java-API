@@ -4,7 +4,7 @@ package com.github.theholywaffle.teamspeak3.commands;
  * #%L
  * TeamSpeak 3 Java API
  * %%
- * Copyright (C) 2014 Bert De Geyter
+ * Copyright (C) 2016 Bert De Geyter, Roger Baumgartner
  * %%
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,24 +26,28 @@ package com.github.theholywaffle.teamspeak3.commands;
  * #L%
  */
 
-import com.github.theholywaffle.teamspeak3.api.ReasonIdentifier;
-import com.github.theholywaffle.teamspeak3.commands.parameter.ArrayParameter;
 import com.github.theholywaffle.teamspeak3.commands.parameter.KeyValueParam;
 
-public class CClientKick extends Command {
+public class CFtRenameFile extends Command {
 
-	public CClientKick(ReasonIdentifier reason, String reasonMessage, int... clientIds) {
-		super("clientkick");
+	public CFtRenameFile(String oldPath, String newPath,
+	                     int channelId, String channelPassword) {
+		super("ftrenamefile");
+		add(new KeyValueParam("cid", channelId));
+		add(new KeyValueParam("cpw", channelPassword != null ? channelPassword : ""));
+		add(new KeyValueParam("oldname", oldPath.startsWith("/") ? oldPath : "/" + oldPath));
+		add(new KeyValueParam("newname", newPath.startsWith("/") ? newPath : "/" + newPath));
+	}
 
-		add(new KeyValueParam("reasonid", reason.getIndex()));
-		if (reasonMessage != null) {
-			add(new KeyValueParam("reasonmsg", reasonMessage));
-		}
-
-		final ArrayParameter p = new ArrayParameter(clientIds.length);
-		for (final int id : clientIds) {
-			p.add(new KeyValueParam("clid", id));
-		}
-		add(p);
+	public CFtRenameFile(String oldPath, String newPath,
+	                     int oldChannelId, String oldChannelPassword,
+	                     int newChannelId, String newChannelPassword) {
+		super("ftrenamefile");
+		add(new KeyValueParam("cid", oldChannelId));
+		add(new KeyValueParam("cpw", oldChannelPassword != null ? oldChannelPassword : ""));
+		add(new KeyValueParam("tcid", newChannelId));
+		add(new KeyValueParam("tcpw", newChannelPassword != null ? newChannelPassword : ""));
+		add(new KeyValueParam("oldname", oldPath.startsWith("/") ? oldPath : "/" + oldPath));
+		add(new KeyValueParam("newname", newPath.startsWith("/") ? newPath : "/" + newPath));
 	}
 }

@@ -4,7 +4,7 @@ package com.github.theholywaffle.teamspeak3.commands;
  * #%L
  * TeamSpeak 3 Java API
  * %%
- * Copyright (C) 2014 Bert De Geyter
+ * Copyright (C) 2016 Bert De Geyter, Roger Baumgartner
  * %%
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,24 +26,18 @@ package com.github.theholywaffle.teamspeak3.commands;
  * #L%
  */
 
-import com.github.theholywaffle.teamspeak3.api.ReasonIdentifier;
-import com.github.theholywaffle.teamspeak3.commands.parameter.ArrayParameter;
 import com.github.theholywaffle.teamspeak3.commands.parameter.KeyValueParam;
 
-public class CClientKick extends Command {
+public class CFtGetFileList extends Command {
 
-	public CClientKick(ReasonIdentifier reason, String reasonMessage, int... clientIds) {
-		super("clientkick");
+	public CFtGetFileList(String directoryPath, int channelId, String channelPassword) {
+		super("ftgetfilelist");
+		add(new KeyValueParam("cid", channelId));
+		add(new KeyValueParam("cpw", channelPassword != null ? channelPassword : ""));
 
-		add(new KeyValueParam("reasonid", reason.getIndex()));
-		if (reasonMessage != null) {
-			add(new KeyValueParam("reasonmsg", reasonMessage));
-		}
-
-		final ArrayParameter p = new ArrayParameter(clientIds.length);
-		for (final int id : clientIds) {
-			p.add(new KeyValueParam("clid", id));
-		}
-		add(p);
+		String path = directoryPath; // Make sure path starts and ends with /
+		if (!path.startsWith("/")) path = "/" + path;
+		if (!path.endsWith("/")) path += "/";
+		add(new KeyValueParam("path", path));
 	}
 }
